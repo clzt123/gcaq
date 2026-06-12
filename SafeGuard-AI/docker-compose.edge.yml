@@ -1,0 +1,91 @@
+# ==========================================
+# SafeGuard-AI (安卫智脑) — 边缘节点部署
+# ==========================================
+# 边缘节点仅运行 SafeGuard-AI Edge 精简服务，
+# 不包含 Neo4j / Milvus（这些是云端专属基础设施）。
+#
+# 快速开始:
+#   1. cp .env.example .env.edge  &&  编辑 .env.edge
+#   2. docker compose -f docker-compose.edge.yml up -d
+#   3. curl http://localhost:8001/health
+#
+# 验证:
+#   curl http://localhost:8001/health           # 边缘健康检查
+#   curl http://localhost:8001/docs             # 边缘 API 文档
+#   curl http://localhost:8001/api/v1/edge/health/cloud  # 探测云端状态
+#
+# 停止:
+#   docker compose -f docker-compose.edge.yml down
+# ==========================================
+
+services:
+  # ====================
+  # 边缘 API 服务 — SafeGuard-AI Edge
+  # ====================
+  safeguard-edge:
+    build:
+      context: .
+      dockerfile: Dockerfile.edge
+    container_name: safeguard-edge
+    restart: unless-stopped
+    networks:
+      - safeguard-edge-network
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env.edge
+    environment:
+      - SAFEGUARD_MODE=edge
+      - NEO4J_USE_MOCK=true
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >
+          python -c "import httpx; httpx.get('http://localhost:8001/health').raise_for_status()"
+          || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ====================
+  # (可选) 边缘本地 Redis — 短期记忆 + 离线队列
+  # ====================
+  edge-redis:
+    image: redis:7-alpine
+    container_name: safeguard-edge-redis
+    restart: unless-stopped
+    networks:
+      - safeguard-edge-network
+    ports:
+      - "6380:6379"     # 使用 6380 避免与云端 Redis 冲突
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 128mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - edge_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    profiles:
+      - full        # 仅 --profile full 时启动，默认只启动边缘 API
+
+# ====================
+# 网络
+# ====================
+networks:
+  safeguard-edge-network:
+    name: safeguard-edge-network
+    driver: bridge
+
+# ====================
+# 数据卷
+# ====================
+volumes:
+  edge_redis_data:
+    name: safeguard-edge-redis-data

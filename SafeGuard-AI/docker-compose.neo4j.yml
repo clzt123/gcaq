@@ -1,0 +1,64 @@
+# ==========================================
+# SafeGuard-AI — Neo4j 本地开发数据库
+# ==========================================
+# 启动前请先复制 .env.example → .env 并配置密码：
+#   NEO4J_USE_MOCK=false
+#   NEO4J_PASSWORD=<your-password>
+#
+# 启动命令:
+#   docker compose -f docker-compose.neo4j.yml up -d
+#
+# 验证:
+#   docker compose -f docker-compose.neo4j.yml logs neo4j
+#   curl http://localhost:7474
+# ==========================================
+
+version: "3.8"
+
+services:
+  neo4j:
+    image: neo4j:latest
+    container_name: safeguard-neo4j
+    restart: unless-stopped
+    ports:
+      - "7474:7474"   # HTTP 浏览器访问
+      - "17687:7687"  # Bolt 协议（应用连接，文档约定本地端口 17687）
+    environment:
+      # 管理员密码（首次启动时设置，后续启动需保持一致）
+      - NEO4J_AUTH=neo4j/${NEO4J_PASSWORD:-your-neo4j-password}
+
+      # 内存限制（Neo4j 5.x 建议最少 512MB 堆内存）
+      - NEO4J_server_memory_heap_initial__size=512m
+      - NEO4J_server_memory_heap_max__size=1g
+      - NEO4J_server_memory_pagecache_size=256m
+
+      # 允许从容器外导入 Cypher 文件
+      - NEO4J_server_directories_import=/
+
+      # 插件（APOC 扩展为常用工具，按需开启）
+      # - NEO4J_PLUGINS=["apoc"]
+
+    volumes:
+      # 数据持久化
+      - neo4j_data:/data
+
+      # 日志持久化
+      - neo4j_logs:/logs
+
+      # 挂载 Mock 初始化脚本（启动后手动导入）
+      - ./mock_data:/var/lib/neo4j/import
+
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p ${NEO4J_PASSWORD:-your-neo4j-password} 'RETURN 1' || exit 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  # (可选) Neo4j 管理界面 — 浏览器访问 http://localhost:7474 即可，无需额外容器
+
+volumes:
+  neo4j_data:
+    name: safeguard-neo4j-data
+  neo4j_logs:
+    name: safeguard-neo4j-logs

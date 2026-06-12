@@ -1,0 +1,24 @@
+{
+  "get_equipment_status": {
+    "equipment_id": "EQ-SMT-A-003",
+    "status": "Running",
+    "runtime_hours": 1985,
+    "last_maintenance": "2024-01-10",
+    "next_maintenance_due": "2024-06-10",
+    "note": "运行时长接近2000小时大修阈值"
+  },
+  "verify_employee_qualification": {
+    "employee_id": "EMP-8842",
+    "name": "王建国",
+    "task_type": "高压管路维修",
+    "is_qualified": true,
+    "cert_expiry": "2027-12-31"
+  },
+  "create_ehs_ticket": {
+    "ticket_id": "EHS-20240520-089",
+    "status": "Created",
+    "assigned_to": "设备维修组-王建国",
+    "priority": "High",
+    "message": "工单已成功推送到企微工作台。"
+  }
+}

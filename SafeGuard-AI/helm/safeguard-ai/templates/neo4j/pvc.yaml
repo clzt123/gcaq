@@ -1,0 +1,35 @@
+{{- if .Values.neo4j.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "safeguard.neo4j.fullname" . }}-data
+  namespace: {{ $.Values.namespace.name }}
+  labels:
+    {{- include "safeguard.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.neo4j.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.neo4j.persistence.size }}
+  {{- if .Values.neo4j.persistence.storageClass }}
+  storageClassName: {{ .Values.neo4j.persistence.storageClass }}
+  {{- end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "safeguard.neo4j.fullname" . }}-logs
+  namespace: {{ $.Values.namespace.name }}
+  labels:
+    {{- include "safeguard.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.neo4j.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.neo4j.persistence.logsSize }}
+  {{- if .Values.neo4j.persistence.storageClass }}
+  storageClassName: {{ .Values.neo4j.persistence.storageClass }}
+  {{- end }}
+{{- end }}

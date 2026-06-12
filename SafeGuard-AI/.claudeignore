@@ -1,0 +1,19 @@
+# Python 虚拟环境与依赖
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# 环境变量 (绝对禁止 AI 读取真实密码)
+.env
+
+# 二进制与多媒体文件 (AI 无法解析且占空间)
+*.jpg
+*.png
+*.mp4
+*.pdf
+
+# 构建产物
+dist/
+build/

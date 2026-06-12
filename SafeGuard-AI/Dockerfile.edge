@@ -1,0 +1,83 @@
+# ==========================================
+# SafeGuard-AI (安卫智脑) — 边缘节点精简镜像
+# ==========================================
+# 构建:  docker build -f Dockerfile.edge -t safeguard-edge:latest .
+# 运行:  docker run -p 8001:8000 --env-file .env.edge safeguard-edge:latest
+#
+# 与云端镜像 (Dockerfile) 的核心差异:
+#   ❌ 无 neo4j       — 边缘不使用图数据库，GraphRAG 由云端处理
+#   ❌ 无 pymilvus    — 边缘不使用向量库，专家记忆由云端提供
+#   ❌ 无 dashscope   — 边缘不调用 Qwen-VL，使用本地轻量模型
+#   ❌ 无 langsmith   — 边缘不上报 Trace，可观测性由云端汇聚
+#   ✅ 仅保留 LangGraph 状态机 + MCP 边缘工具 + 本地 Redis 缓存
+#
+# 镜像体积: ~180MB (云端 ~500MB+)
+# ==========================================
+
+# ====================
+# Stage 1: 构建阶段
+# ====================
+FROM python:3.11-slim AS builder
+
+# 安装编译依赖（仅 opencv 需要，比云端精简）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    gcc \
+    g++ \
+    libffi-dev \
+    libssl-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 虚拟环境
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 安装边缘精简依赖
+COPY requirements.edge.txt .
+RUN pip install --no-cache-dir -r requirements.edge.txt
+
+
+# ====================
+# Stage 2: 运行阶段
+# ====================
+FROM python:3.11-slim AS runtime
+
+# 最小运行时库（仅 opencv 需要 libgomp1）
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 从构建阶段复制虚拟环境
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 工作目录
+WORKDIR /app
+
+# 仅复制边缘需要的代码（排除 cloud 专属模块）
+COPY app/__init__.py          app/ 2>/dev/null || true
+COPY app/main.py              app/
+COPY app/config.py            app/
+COPY app/utils/               app/utils/
+COPY app/tools/               app/tools/
+COPY app/core/graph/          app/core/graph/
+# 注意: 不复制 app/core/rag/ (Neo4j+Milvus 云端专属)
+#      不复制 app/core/memory/manager.py (Milvus 云端专属)
+#      不复制 app/core/vision/analyzer.py (DashScope 云端专属)
+
+# 复制边缘入口脚本
+COPY app_edge.py app/
+
+# 暴露边缘服务端口（区别于云端的 8000）
+EXPOSE 8001
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD python -c "import httpx; httpx.get('http://localhost:8001/health').raise_for_status()" || exit 1
+
+# 默认以 Mock 全离线模式启动
+ENV NEO4J_USE_MOCK=true
+ENV SAFEGUARD_MODE=edge
+
+# 启动边缘服务
+CMD ["uvicorn", "app.app_edge:app", "--host", "0.0.0.0", "--port", "8001"]

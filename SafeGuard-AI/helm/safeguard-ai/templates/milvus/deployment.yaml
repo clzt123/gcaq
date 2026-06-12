@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "safeguard.milvus.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "safeguard.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ include "safeguard.milvus.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "safeguard.milvus.fullname" . }}
+    spec:
+      containers:
+        - name: milvus
+          image: {{ .Values.milvus.image.repository }}:{{ .Values.milvus.image.tag }}
+          imagePullPolicy: {{ .Values.milvus.image.pullPolicy }}
+          command: ["milvus", "run", "standalone"]
+          ports:
+            - containerPort: 19530
+              name: grpc
+            - containerPort: 9091
+              name: http
+          env:
+            - name: ETCD_USE_EMBED
+              value: "true"
+            - name: ETCD_DATA_DIR
+              value: /var/lib/milvus/etcd
+            - name: MINIO_USE_EMBED
+              value: "true"
+            - name: MINIO_DATA_DIR
+              value: /var/lib/milvus/minio
+            - name: COMMON_STORAGETYPE
+              value: "local"
+          {{- if .Values.milvus.persistence.enabled }}
+          volumeMounts:
+            - name: milvus-data
+              mountPath: /var/lib/milvus
+          {{- end }}
+          resources:
+            requests:
+              memory: {{ .Values.milvus.resources.requests.memory }}
+              cpu: {{ .Values.milvus.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.milvus.resources.limits.memory }}
+              cpu: {{ .Values.milvus.resources.limits.cpu }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9091
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 9091
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      {{- if .Values.milvus.persistence.enabled }}
+      volumes:
+        - name: milvus-data
+          persistentVolumeClaim:
+            claimName: {{ include "safeguard.milvus.fullname" . }}-data
+      {{- end }}

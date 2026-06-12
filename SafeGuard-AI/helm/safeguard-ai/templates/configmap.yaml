@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "safeguard.labels" . | nindent 4 }}
+data:
+  # 运行模式
+  SAFEGUARD_MODE: {{ .Values.config.mode | quote }}
+  NEO4J_USE_MOCK: {{ .Values.config.neo4jUseMock | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+
+  # 云服务地址（容器内服务名）
+  NEO4J_URI: "bolt://{{ include "safeguard.neo4j.fullname" . }}:7687"
+  REDIS_URL: "redis://{{ include "safeguard.redis.fullname" . }}:6379/0"
+  MILVUS_HOST: "{{ include "safeguard.milvus.fullname" . }}"
+  MILVUS_PORT: "19530"
+
+  # LLM
+  LLM_BASE_URL: {{ .Values.config.llmBaseUrl | quote }}
+  LLM_MODEL_NAME: {{ .Values.config.llmModelName | quote }}
+  DASHSCOPE_VL_MODEL: {{ .Values.config.vlModel | quote }}
+  DASHSCOPE_VL_TIMEOUT: {{ .Values.config.vlTimeout | quote }}
+
+  # LangSmith
+  LANGSMITH_PROJECT: {{ .Values.config.langsmithProject | default "SafeGuard-AI-Production" | quote }}
+  LANGSMITH_ENDPOINT: {{ .Values.config.langsmithEndpoint | default "https://api.smith.langchain.com" | quote }}

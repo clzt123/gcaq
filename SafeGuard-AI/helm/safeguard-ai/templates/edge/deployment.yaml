@@ -1,0 +1,55 @@
+{{- if .Values.edge.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "safeguard.edge.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "safeguard.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.edge.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "safeguard.edge.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "safeguard.edge.fullname" . }}
+    spec:
+      containers:
+        - name: edge
+          image: {{ .Values.edge.image.repository }}:{{ .Values.edge.image.tag }}
+          imagePullPolicy: {{ .Values.edge.image.pullPolicy }}
+          ports:
+            - containerPort: 8001
+          env:
+            - name: SAFEGUARD_MODE
+              value: "edge"
+            - name: NEO4J_USE_MOCK
+              value: "true"
+            - name: EDGE_NODE_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: CLOUD_API_URL
+              value: "http://{{ include "safeguard.api.fullname" . }}:8000"
+          resources:
+            requests:
+              memory: {{ .Values.edge.resources.requests.memory }}
+              cpu: {{ .Values.edge.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.edge.resources.limits.memory }}
+              cpu: {{ .Values.edge.resources.limits.cpu }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 15
+{{- end }}

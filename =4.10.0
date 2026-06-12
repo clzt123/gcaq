@@ -1,0 +1,7 @@
+Collecting opencv-python-headless
+  Downloading opencv_python_headless-4.13.0.92-cp37-abi3-win_amd64.whl.metadata (20 kB)
+Requirement already satisfied: numpy>=2 in c:\users\windows\anaconda3\lib\site-packages (from opencv-python-headless) (2.1.3)
+Downloading opencv_python_headless-4.13.0.92-cp37-abi3-win_amd64.whl (40.1 MB)
+   ---------------------------------------- 40.1/40.1 MB 19.4 MB/s eta 0:00:00
+Installing collected packages: opencv-python-headless
+Successfully installed opencv-python-headless-4.13.0.92

@@ -1,0 +1,18 @@
+{{- if .Values.milvus.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "safeguard.milvus.fullname" . }}-data
+  namespace: {{ $.Values.namespace.name }}
+  labels:
+    {{- include "safeguard.labels" $ | nindent 4 }}
+spec:
+  accessModes:
+    - {{ .Values.milvus.persistence.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.milvus.persistence.size }}
+  {{- if .Values.milvus.persistence.storageClass }}
+  storageClassName: {{ .Values.milvus.persistence.storageClass }}
+  {{- end }}
+{{- end }}

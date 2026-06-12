@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "safeguard.neo4j.fullname" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "safeguard.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ include "safeguard.neo4j.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "safeguard.neo4j.fullname" . }}
+    spec:
+      containers:
+        - name: neo4j
+          image: {{ .Values.neo4j.image.repository }}:{{ .Values.neo4j.image.tag }}
+          imagePullPolicy: {{ .Values.neo4j.image.pullPolicy }}
+          ports:
+            - containerPort: 7687
+              name: bolt
+            - containerPort: 7474
+              name: http
+          env:
+            - name: NEO4J_AUTH
+              value: "neo4j/$(NEO4J_PASSWORD)"
+            - name: NEO4J_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Release.Name }}-secret
+                  key: NEO4J_PASSWORD
+            - name: NEO4J_server_memory_heap_initial__size
+              value: {{ .Values.neo4j.resources.heapInitial | quote }}
+            - name: NEO4J_server_memory_heap_max__size
+              value: {{ .Values.neo4j.resources.heapMax | quote }}
+            - name: NEO4J_server_memory_pagecache_size
+              value: {{ .Values.neo4j.resources.pagecache | quote }}
+          {{- if .Values.neo4j.persistence.enabled }}
+          volumeMounts:
+            - name: neo4j-data
+              mountPath: /data
+            - name: neo4j-logs
+              mountPath: /logs
+          {{- end }}
+          resources:
+            requests:
+              memory: {{ .Values.neo4j.resources.requests.memory }}
+              cpu: {{ .Values.neo4j.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.neo4j.resources.limits.memory }}
+              cpu: {{ .Values.neo4j.resources.limits.cpu }}
+          livenessProbe:
+            tcpSocket:
+              port: 7687
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket:
+              port: 7687
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      {{- if .Values.neo4j.persistence.enabled }}
+      volumes:
+        - name: neo4j-data
+          persistentVolumeClaim:
+            claimName: {{ include "safeguard.neo4j.fullname" . }}-data
+        - name: neo4j-logs
+          persistentVolumeClaim:
+            claimName: {{ include "safeguard.neo4j.fullname" . }}-logs
+      {{- end }}

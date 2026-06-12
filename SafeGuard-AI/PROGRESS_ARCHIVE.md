@@ -1,7 +1,8 @@
 # SafeGuard-AI (安卫智脑) 开发进度归档
 
-> **归档日期**: 2026-06-11
-> **归档范围**: Phase 1-8 全部已完成内容 | 121/121 测试通过 | 本项目 Phase 1-4 + Phase 2 边缘智能已锁定
+> **最后归档**: 2026-06-12
+> **归档范围**: Phase 1-8 + P3 高阶智能化（功能 3/5/11/14/15/16）全部已完成
+> **测试状态**: 497/497 通过
 > **当前活跃任务**: 请查看 [PROGRESS.md](PROGRESS.md)
 
 ---
@@ -324,3 +325,180 @@ SafeGuard-AI/
 ├── .env.edge                        # 🆕 Phase 2 边缘节点环境变量模板
 └── .claudeignore
 ```
+
+---
+
+## 📦 v0.3.0 归档 (2026-06-12) — 功能补齐 (7项)
+
+### 新增功能
+
+| # | 功能 | 核心交付 |
+|---|------|---------|
+| 2 | 结构化知识库 | `DocumentParser` (Unstructured+Mock) + `ChineseTextSplitter` + `KnowledgeIngestion` + 5份中文EHS法规JSON + knowledge_chunks检索集成 |
+| 6 | 零幻觉校验 | `HallucinationGuard` 三层防线 (Pre-LLM Gate / Guarded Prompt / Post-LLM Verify) + `llm_analysis_node` + 置信度<0.7拒答 + Citation Chaining |
+| 9 | 员工安全画像 | `RiskScorer` 四维度评分 + `ProfileManager` + `mock_employees.json` (8名员工) + 部门风险分布统计 |
+| 10 | 设备全生命周期 | `EquipmentRiskScorer` 故障频率评分 + `EquipmentManager` + `mock_equipment.json` (6台设备) + 维保/大修预警 |
+| 12 | 数字巡检员 | `ImageHasher` (aHash/dHash/pHash) + `ImageDiffer` + `StateChangeDetector` + `PatrolScheduler` (APScheduler) |
+| 20 | 可观测性看板 | `MetricsCollector` (Counter/Gauge/Histogram) + `MetricsExporter` (Prometheus text+JSON) + `AlertRules` (6条预定义规则) |
+| 13+19 | MCP标准化 | `CircuitBreaker` (三态切换) + `EHSAdapter`/`HRAdapter`/`MESAdapter` + `MCPServer` + `AuditLogger` |
+
+### v0.3.0 测试增长
+
+```
+                  原有    新增    总计
+功能6 零幻觉校验      -      46      46
+功能2 结构化知识库    -      40      40
+功能12 数字巡检员     -      39      39
+功能9 员工安全画像    -      22      22
+功能10 设备全生命周期  -      22      22
+功能20 可观测性看板   -      12      12
+功能13+19 MCP标准化   -      19      19
+─────────────────────────────────────
+原有测试                     121     121
+─────────────────────────────────────
+总计                 121     200     327   (+170%)
+```
+
+### v0.3.0 测试文件
+
+| 文件 | 数量 | 测试内容 |
+|------|------|---------|
+| test_hallucination_guard.py | 46 | 零幻觉三层防线 |
+| test_knowledge_base.py | 40 | 知识库管道 |
+| test_patrol.py | 39 | 数字巡检员 |
+| test_employee_profile.py | 22 | 员工安全画像 |
+| test_equipment.py | 22 | 设备生命周期 |
+| test_observability.py | 12 | 可观测性看板 |
+| test_mcp_server.py | 19 | MCP Server + CircuitBreaker |
+| **原有测试** | 121 | Phase 1-5 + Phase 2 边缘 |
+| **v0.3.0 总计** | **327** | |
+
+---
+
+## 🆕 v0.4.0 归档 (2026-06-12) — P3 高阶智能化 (6项)
+
+### 功能 14 — 智能会议纪要
+
+> **已实现**: Mock 音频转录（3种会议场景）+ Whisper API 预留接口 + LLM 结构化信息提取 + 正则兜底（责任人/截止时间/决议项）+ Markdown 纪要生成（Jinja2模板）+ 知识库归档
+
+**交付清单**:
+- [x] `app/core/meeting/transcriber.py` — `MockTranscriber` (3会议场景): 周安全例会/事故复盘会/应急演练总结 + `WhisperTranscriber` API预留
+- [x] `app/core/meeting/extractor.py` — `MeetingExtractor`: LLM提取(责任人/截止时间/决议项) + `_RegexExtractor` 中文正则兜底
+- [x] `app/core/meeting/minutes_generator.py` — `MinutesGenerator`: Jinja2模板Markdown + 纯文本兜底 + `KnowledgeIngestion.ingest_text()` 归档
+- [x] `app/core/meeting/meeting_manager.py` — `MeetingManager`: 音频→转录→提取→生成→归档 全流程编排
+- [x] `app/api/v1/meeting.py` — `POST /api/v1/meeting/minutes` + `/minutes/text` + `GET /scenarios`
+- [x] `mock_data/meeting_transcripts.json` — 3份中文安全会议转录文本
+- [x] `app/config.py` — `MeetingSettings` 配置类 (asr_mode/extraction_mode等)
+- [x] `tests/test_meeting_minutes.py` — **39 测试**
+
+### 功能 15 — 个性化培训
+
+> **已实现**: Collaborative Filtering 推荐引擎（基于员工画像的4维加权匹配）+ LLM + 模板兜底：事故案例→选择题/判断题 + 12个事故案例库 + 部门批量培训计划
+
+**交付清单**:
+- [x] `app/core/training/recommend_engine.py` — `RecommendEngine`: 违章类型重叠(35%)+部门匹配(25%)+培训缺口(20%)+风险匹配(20%)
+- [x] `app/core/training/question_generator.py` — `QuestionGenerator`: LLM生成选择题/判断题 + 4类模板兜底
+- [x] `app/core/training/training_manager.py` — `TrainingManager`: 推荐→出题→培训计划 全流程
+- [x] `app/api/v1/training.py` — `POST /api/v1/training/plan/{id}` + `GET /cases/categories` + `GET /cases/{id}`
+- [x] `mock_data/accident_cases.json` — 12个真实事故案例 (焊接/化学品/消防/高处/电气/有限空间/车辆/动火/噪声/起重/作业许可)
+- [x] `tests/test_training.py` — **23 测试**
+
+### 功能 3 — 本体驱动图谱
+
+> **已实现**: LLM 实时三元组抽取（6种实体类型 + 8种关系类型）+ 动态 Schema 管理（8种预定义节点/关系 + 自动注册新类型）+ Cypher MERGE 生成 + Neo4j/Mock 图谱写入
+
+**交付清单**:
+- [x] `app/core/ontology/triplet_extractor.py` — `TripletExtractor`: LLM抽取 + `_RegexTripletExtractor` 中文关系模式匹配
+- [x] `app/core/ontology/schema_manager.py` — `SchemaManager`: 8种NodeType + 8种RelationType + 动态注册 + validate_triplet()
+- [x] `app/core/ontology/ontology_manager.py` — `OntologyManager`: 抽取→校验→Cypher生成→图写入 全流程
+- [x] `tests/test_ontology.py` — **26 测试**
+
+### 功能 5 — 法规变更影响分析
+
+> **已实现**: difflib Text-Diff 对比新旧法规文本（含 HTML 差异报告）+ Neo4j 图谱反向追溯（法规→隐患→设备→SOP）+ Mock 关键词匹配兜底 + 2组 Mock 法规变更数据
+
+**交付清单**:
+- [x] `app/core/regulation/text_differ.py` — `TextDiffer`: difflib.SequenceMatcher + HTML差异 + 关键词变更提取
+- [x] `app/core/regulation/impact_analyzer.py` — `ImpactAnalyzer`: Neo4j查询追踪 + Mock关键词匹配 + 影响等级评估 + 建议生成
+- [x] `app/core/regulation/regulation_manager.py` — `RegulationManager`: 对比→追溯→报告 全流程
+- [x] `mock_data/regulation_changes.json` — 2组完整法规变更 (GB30871 + 安全生产法修正案)
+- [x] `tests/test_regulation.py` — **22 测试**
+
+### 功能 11 — 反思与进化
+
+> **已实现**: 正反馈闭环（点赞/采纳→正样本 + SFT 数据导出）+ 误报自动加入 Negative Sample + 感知哈希相似度检索 + 模型权重注册表 + 热加载 + 回滚机制 + 集成现有 FeedbackLoop 的驳回反馈流水线
+
+**交付清单**:
+- [x] `app/core/evolution/positive_feedback.py` — `PositiveFeedbackCollector`: 4种正反馈类型 + Few-shot导出 + SFT JSONL导出
+- [x] `app/core/evolution/negative_sample.py` — `NegativeSampleManager`: 误报自动收集 + 汉明距离相似检索 + 180天过期归档
+- [x] `app/core/evolution/model_registry.py` — `ModelRegistry`: 版本注册 + 热加载activate() + rollback() + 部署历史
+- [x] `app/core/evolution/evolution_manager.py` — `EvolutionManager`: 正/负反馈→SFT数据→微调→热加载 完整闭环
+- [x] `tests/test_evolution.py` — **29 测试**
+
+### 功能 16 — 应急预案推演
+
+> **已实现**: 2D 网格地图 Mock 数字孪生（40×30网格/8区域/4出口/6消防栓/6传感器）+ A* 算法最优逃生路径（避开危险区 + 多出口备选）+ 火灾/化学品泄漏传感器模拟 + 温度梯度 + 烟雾扩散
+
+**交付清单**:
+- [x] `app/core/emergency/grid_map.py` — `GridMap`: 2D网格 + 障碍物标记 + 危险区扩散 + 出口/消防栓管理
+- [x] `app/core/emergency/path_planner.py` — `PathPlanner`: A*算法 + 多出口选择 + 备选路径 + 疏散时间估算
+- [x] `app/core/emergency/sensor_sim.py` — `SensorSimulator`: 火灾/化学品泄漏场景 + 距离衰减 + 告警阈值
+- [x] `app/core/emergency/emergency_manager.py` — `EmergencyManager`: 灾害→传感器→路径→预案 端到端推演
+- [x] `mock_data/factory_layout.json` — 完整工厂平面图 (40×30, 8区域, 4出口, 6传感器, 6消防栓)
+- [x] `tests/test_emergency.py` — **31 测试**
+
+### v0.4.0 测试增长
+
+```
+功能14 智能会议纪要      39
+功能15 个性化培训        23
+功能3  本体驱动图谱      26
+功能5  法规变更影响      22
+功能11 反思与进化        29
+功能16 应急预案推演      31
+──────────────────────────
+v0.4.0 新增             170
+v0.3.0 基准             327
+──────────────────────────
+v0.4.0 总计             497  (+52%)
+```
+
+### v0.4.0 新增快速启动
+
+```bash
+# 智能会议纪要
+curl -X POST http://localhost:8000/api/v1/meeting/minutes \
+  -H "Content-Type: application/json" \
+  -d '{"audio_path": "weekly_safety.mp3", "archive": false}'
+
+# 个性化培训
+curl -X POST http://localhost:8000/api/v1/training/plan/EMP_001 \
+  -H "Content-Type: application/json" \
+  -d '{"cases_per_employee": 3, "questions_per_case": 2}'
+
+# 应急预案推演 (Python)
+python -c "import asyncio; from app.core.emergency import EmergencyManager; \
+  mgr = EmergencyManager(); result = asyncio.run(mgr.run_drill('fire', (6,6), 0.8)); \
+  print(f'疏散时间: {result.total_evacuation_time}s, 安全: {result.is_safe}')"
+```
+
+### 技术方案 20 项功能 — 100% 完成 🎉
+
+```
+模块一(业务前台):       模块二(认知大脑):       模块三(数字灵魂):       模块四(工程骨架):
+ 1.多模态隐患识别 ✅     2.结构化知识库   ✅     7.短期工作记忆   ✅    13.智能合规审计   ✅
+12.数字巡检员     ✅     3.本体驱动图谱   ✅     8.专家经验记忆   ✅    16.应急预案推演   ✅
+17.自动化整改工单 ✅     4.GraphRAG深度检索✅    9.员工安全画像   ✅    19.MCP工具集成    ✅
+14.智能会议纪要   ✅     5.法规变更影响   ✅    10.设备全生命周期 ✅    20.可观测性看板   ✅
+18.LangGraph状态机✅     6.零幻觉校验     ✅    11.反思与进化     ✅
+                        15.个性化培训     ✅
+```
+
+### v0.4.0 核心亮点
+
+1. **智能会议纪要** — Mock ASR + LLM实体提取 + Markdown纪要生成 + 知识库归档 (39测试)
+2. **个性化培训推荐** — 协同过滤引擎 + 12案例库 + 自动题目生成 (23测试)
+3. **本体驱动图谱** — LLM三元组抽取 + 动态Schema + Neo4j写入 (26测试)
+4. **法规变更影响** — Text-Diff对比 + 图谱反向追溯 + 影响报告 (22测试)
+5. **反思进化闭环** — 正样本收集 + 负样本管理 + 模型热加载/回滚 (29测试)
+6. **应急预案推演** — A*路径规划 + 2D数字孪生 + 传感器模拟 (31测试)

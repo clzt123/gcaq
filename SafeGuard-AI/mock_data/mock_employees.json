@@ -1,0 +1,359 @@
+{
+  "_description": "Mock 员工安全档案数据 — 用于员工安全画像 (功能9) 开发和测试",
+  "_version": "1.0.0",
+  "_total_employees": 8,
+  "employees": [
+    {
+      "employee_id": "EMP_001",
+      "name": "张建国",
+      "department": "生产部-焊接车间",
+      "position": "焊接操作工",
+      "position_risk": 0.6,
+      "hire_date": "2020-03-15",
+      "violations": [
+        {
+          "violation_id": "VIO_001_01",
+          "violation_type": "no_hardhat",
+          "severity": "medium",
+          "occurred_at": "2026-05-20T09:30:00",
+          "description": "焊接作业时未佩戴安全帽",
+          "hazard_report_id": "ALT-2024-001",
+          "penalty": "警告 + 安全教育",
+          "resolved": true
+        },
+        {
+          "violation_id": "VIO_001_02",
+          "violation_type": "unsafe_behavior",
+          "severity": "low",
+          "occurred_at": "2026-04-10T14:00:00",
+          "description": "操作时未使用防护面罩",
+          "penalty": "口头警告",
+          "resolved": true
+        }
+      ],
+      "certifications": [
+        {
+          "cert_id": "CERT_001_01",
+          "cert_type": "熔化焊接与热切割作业证",
+          "issue_date": "2023-06-01",
+          "expiry_date": "2029-06-01",
+          "issuing_authority": "应急管理局",
+          "status": "valid"
+        },
+        {
+          "cert_id": "CERT_001_02",
+          "cert_type": "高处作业证",
+          "issue_date": "2021-09-15",
+          "expiry_date": "2027-09-15",
+          "issuing_authority": "应急管理局",
+          "status": "valid"
+        }
+      ],
+      "trainings": [
+        {
+          "training_id": "TRN_001_01",
+          "training_name": "动火作业安全培训",
+          "completed_at": "2026-01-15T09:00:00",
+          "required": true,
+          "valid_until": "2027-01-15"
+        },
+        {
+          "training_id": "TRN_001_02",
+          "training_name": "化学品防护培训",
+          "completed_at": "2025-06-20T14:00:00",
+          "required": true,
+          "valid_until": "2026-06-20"
+        },
+        {
+          "training_id": "TRN_001_03",
+          "training_name": "新版安全标准化培训",
+          "completed_at": null,
+          "required": true
+        }
+      ]
+    },
+    {
+      "employee_id": "EMP_002",
+      "name": "李明华",
+      "department": "生产部-焊接车间",
+      "position": "焊接班长",
+      "position_risk": 0.5,
+      "hire_date": "2018-07-01",
+      "violations": [],
+      "certifications": [
+        {
+          "cert_id": "CERT_002_01",
+          "cert_type": "熔化焊接与热切割作业证",
+          "issue_date": "2022-03-01",
+          "expiry_date": "2028-03-01",
+          "issuing_authority": "应急管理局",
+          "status": "valid"
+        }
+      ],
+      "trainings": [
+        {
+          "training_id": "TRN_002_01",
+          "training_name": "班组长安全管理培训",
+          "completed_at": "2026-03-10T09:00:00",
+          "required": true,
+          "valid_until": "2027-03-10"
+        }
+      ]
+    },
+    {
+      "employee_id": "EMP_003",
+      "name": "王宏伟",
+      "department": "仓储物流部",
+      "position": "叉车操作员",
+      "position_risk": 0.5,
+      "hire_date": "2021-11-01",
+      "violations": [
+        {
+          "violation_id": "VIO_003_01",
+          "violation_type": "blocked_exit",
+          "severity": "high",
+          "occurred_at": "2026-06-05T08:15:00",
+          "description": "叉车违规停放在消防通道上",
+          "hazard_report_id": "ALT-2024-002",
+          "penalty": "罚款200元 + 通报批评",
+          "resolved": true
+        },
+        {
+          "violation_id": "VIO_003_02",
+          "violation_type": "no_safety_vest",
+          "severity": "medium",
+          "occurred_at": "2026-05-12T10:45:00",
+          "description": "仓库作业时未穿反光安全背心",
+          "penalty": "口头警告",
+          "resolved": true
+        },
+        {
+          "violation_id": "VIO_003_03",
+          "violation_type": "unsafe_behavior",
+          "severity": "low",
+          "occurred_at": "2026-06-01T16:30:00",
+          "description": "叉车行驶中使用手机",
+          "penalty": "口头警告",
+          "resolved": false
+        }
+      ],
+      "certifications": [
+        {
+          "cert_id": "CERT_003_01",
+          "cert_type": "叉车驾驶证（厂内）",
+          "issue_date": "2022-01-10",
+          "expiry_date": "2026-07-10",
+          "issuing_authority": "质量技术监督局",
+          "status": "expiring"
+        }
+      ],
+      "trainings": [
+        {
+          "training_id": "TRN_003_01",
+          "training_name": "叉车安全操作规程培训",
+          "completed_at": "2025-08-01T13:00:00",
+          "required": true,
+          "valid_until": "2026-08-01"
+        },
+        {
+          "training_id": "TRN_003_02",
+          "training_name": "消防通道管理培训",
+          "completed_at": null,
+          "required": true
+        }
+      ]
+    },
+    {
+      "employee_id": "EMP_004",
+      "name": "赵永强",
+      "department": "设备维修部",
+      "position": "维修电工",
+      "position_risk": 0.7,
+      "hire_date": "2019-04-20",
+      "violations": [
+        {
+          "violation_id": "VIO_004_01",
+          "violation_type": "unauthorized_entry",
+          "severity": "high",
+          "occurred_at": "2026-06-02T11:00:00",
+          "description": "未经审批进入受限空间进行维修",
+          "hazard_report_id": "ALT-2024-003",
+          "penalty": "罚款500元 + 停岗培训3天",
+          "resolved": true
+        },
+        {
+          "violation_id": "VIO_004_02",
+          "violation_type": "unsafe_behavior",
+          "severity": "high",
+          "occurred_at": "2026-03-15T09:00:00",
+          "description": "带电作业未使用绝缘防护装备",
+          "penalty": "严重警告 + 安全教育",
+          "resolved": true
+        }
+      ],
+      "certifications": [
+        {
+          "cert_id": "CERT_004_01",
+          "cert_type": "电工进网作业许可证",
+          "issue_date": "2021-05-15",
+          "expiry_date": "2026-05-15",
+          "issuing_authority": "能源局",
+          "status": "expired"
+        },
+        {
+          "cert_id": "CERT_004_02",
+          "cert_type": "高处作业证",
+          "issue_date": "2023-02-01",
+          "expiry_date": "2029-02-01",
+          "issuing_authority": "应急管理局",
+          "status": "valid"
+        }
+      ],
+      "trainings": [
+        {
+          "training_id": "TRN_004_01",
+          "training_name": "电气安全操作培训",
+          "completed_at": "2025-05-01T09:00:00",
+          "required": true,
+          "valid_until": "2026-05-01"
+        },
+        {
+          "training_id": "TRN_004_02",
+          "training_name": "受限空间作业安全培训",
+          "completed_at": null,
+          "required": true
+        }
+      ]
+    },
+    {
+      "employee_id": "EMP_005",
+      "name": "陈晓芳",
+      "department": "安全环保部",
+      "position": "安全员",
+      "position_risk": 0.2,
+      "hire_date": "2022-08-01",
+      "violations": [],
+      "certifications": [
+        {
+          "cert_id": "CERT_005_01",
+          "cert_type": "注册安全工程师",
+          "issue_date": "2023-12-01",
+          "expiry_date": "2028-12-01",
+          "issuing_authority": "应急管理部",
+          "status": "valid"
+        }
+      ],
+      "trainings": [
+        {
+          "training_id": "TRN_005_01",
+          "training_name": "安全生产法律法规更新培训",
+          "completed_at": "2026-04-01T09:00:00",
+          "required": true,
+          "valid_until": "2027-04-01"
+        }
+      ]
+    },
+    {
+      "employee_id": "EMP_006",
+      "name": "刘大军",
+      "department": "生产部-化工车间",
+      "position": "化工操作工",
+      "position_risk": 0.8,
+      "hire_date": "2023-06-15",
+      "violations": [
+        {
+          "violation_id": "VIO_006_01",
+          "violation_type": "oil_leak",
+          "severity": "high",
+          "occurred_at": "2026-06-08T07:45:00",
+          "description": "未按规定处理化学品泄漏，直接用水冲洗",
+          "hazard_report_id": "ALT-2024-004",
+          "penalty": "罚款300元 + 安全培训",
+          "resolved": false
+        }
+      ],
+      "certifications": [
+        {
+          "cert_id": "CERT_006_01",
+          "cert_type": "危险化学品操作证",
+          "issue_date": "2024-01-10",
+          "expiry_date": "2026-07-10",
+          "issuing_authority": "应急管理局",
+          "status": "expiring"
+        }
+      ],
+      "trainings": [
+        {
+          "training_id": "TRN_006_01",
+          "training_name": "危化品泄漏应急处置培训",
+          "completed_at": null,
+          "required": true
+        }
+      ]
+    },
+    {
+      "employee_id": "EMP_007",
+      "name": "周明辉",
+      "department": "设备维修部",
+      "position": "机械维修工",
+      "position_risk": 0.5,
+      "hire_date": "2020-01-20",
+      "violations": [
+        {
+          "violation_id": "VIO_007_01",
+          "violation_type": "unsafe_behavior",
+          "severity": "medium",
+          "occurred_at": "2026-04-20T15:30:00",
+          "description": "维修设备时未执行LOTO上锁挂牌程序",
+          "penalty": "警告 + 安全培训",
+          "resolved": true
+        }
+      ],
+      "certifications": [
+        {
+          "cert_id": "CERT_007_01",
+          "cert_type": "机械维修操作证",
+          "issue_date": "2021-07-01",
+          "expiry_date": "2027-07-01",
+          "issuing_authority": "应急管理局",
+          "status": "valid"
+        }
+      ],
+      "trainings": [
+        {
+          "training_id": "TRN_007_01",
+          "training_name": "LOTO上锁挂牌培训",
+          "completed_at": "2026-05-01T14:00:00",
+          "required": true,
+          "valid_until": "2027-05-01"
+        },
+        {
+          "training_id": "TRN_007_02",
+          "training_name": "机械设备安全操作规程",
+          "completed_at": "2025-12-01T09:00:00",
+          "required": true,
+          "valid_until": "2026-12-01"
+        }
+      ]
+    },
+    {
+      "employee_id": "EMP_008",
+      "name": "孙丽萍",
+      "department": "行政部",
+      "position": "行政专员",
+      "position_risk": 0.1,
+      "hire_date": "2024-03-01",
+      "violations": [],
+      "certifications": [],
+      "trainings": [
+        {
+          "training_id": "TRN_008_01",
+          "training_name": "全员安全基础知识培训",
+          "completed_at": "2026-02-20T10:00:00",
+          "required": true,
+          "valid_until": "2027-02-20"
+        }
+      ]
+    }
+  ]
+}

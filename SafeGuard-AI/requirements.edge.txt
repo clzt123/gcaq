@@ -1,0 +1,41 @@
+# =========================
+# SafeGuard-AI Edge 精简依赖
+# =========================
+# 仅安装边缘节点必需的包，排除云端专属依赖。
+# vs requirements.txt 差异: -neo4j -pymilvus -dashscope -langsmith
+#                        -langchain-community -langchain-openai
+#                        -APScheduler -Jinja2
+#
+# 安装: pip install -r requirements.edge.txt
+# 镜像体积: ~180MB (vs 全量 ~500MB+)
+
+# --- AI 编排（边缘仅需 StateGraph + @tool 装饰器）---
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-core>=0.3.0
+
+# --- Web 框架 ---
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+httpx>=0.27.0
+
+# --- 配置管理 ---
+pydantic-settings>=2.5.0
+pydantic>=2.0.0
+
+# --- 本地缓存（边缘短期记忆）---
+redis>=5.0.0
+
+# --- 图像处理（边缘轻量推理）---
+opencv-python-headless>=4.10.0
+Pillow>=10.0.0
+
+# --- MQTT 边缘-云端通信 ---
+paho-mqtt>=2.0.0
+
+# --- 边缘可视化（可选）---
+streamlit>=1.30.0
+
+# --- 测试框架 ---
+pytest>=8.0.0
+pytest-asyncio>=0.24.0

@@ -1,0 +1,40 @@
+# ==========================================
+# SafeGuard-AI — Redis 本地开发缓存
+# ==========================================
+# 启动命令:
+#   docker compose -f docker-compose.redis.yml up -d
+#
+# 验证:
+#   docker compose -f docker-compose.redis.yml logs redis
+#   docker exec safeguard-redis redis-cli ping
+# ==========================================
+
+version: "3.8"
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: safeguard-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: >
+      redis-server
+      --appendonly yes
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  redis_data:
+    name: safeguard-redis-data

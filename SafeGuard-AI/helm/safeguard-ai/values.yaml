@@ -1,0 +1,166 @@
+# ==========================================
+# SafeGuard-AI (安卫智脑) Helm Chart — 默认值
+# ==========================================
+# 安装:  helm install safeguard-ai . -f values-prod.yaml
+# 升级:  helm upgrade safeguard-ai . -f values-prod.yaml
+# 卸载:  helm uninstall safeguard-ai
+
+# -- 部署环境 (dev / staging / production)
+environment: production
+
+# -- 命名空间
+namespace:
+  create: true
+  name: safeguard-ai
+
+# -- 全局配置 (注入 ConfigMap → 所有 Pod)
+config:
+  mode: cloud
+  neo4jUseMock: "false"
+  logLevel: INFO
+  llmBaseUrl: https://api.deepseek.com
+  llmModelName: deepseek-chat
+  vlModel: qwen-vl-max-latest
+  vlTimeout: "60.0"
+  langsmithProject: SafeGuard-AI-Production
+  langsmithEndpoint: https://api.smith.langchain.com
+
+# -- 密钥 (K8s Secret) — ⚠️ 生产环境通过 sealed-secrets 或外部 vault 注入
+secrets:
+  llmApiKey: ""             # sk-your-deepseek-key
+  dashscopeApiKey: ""       # sk-your-dashscope-key
+  neo4jPassword: ""         # 强密码 (16+ 字符)
+  langsmithApiKey: ""       # lsv2_pt_...
+
+# ====================
+# Neo4j 图数据库
+# ====================
+neo4j:
+  image:
+    repository: neo4j
+    tag: latest
+    pullPolicy: IfNotPresent
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 20Gi
+    logsSize: 5Gi
+    storageClass: ""        # 留空使用默认 StorageClass
+  resources:
+    heapInitial: 512m
+    heapMax: 1g
+    pagecache: 256m
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+# ====================
+# Redis 缓存
+# ====================
+redis:
+  image:
+    repository: redis
+    tag: 7-alpine
+    pullPolicy: IfNotPresent
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    storageClass: ""
+  resources:
+    maxmemory: 256mb
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# ====================
+# Milvus 向量数据库
+# ====================
+milvus:
+  image:
+    repository: milvusdb/milvus
+    tag: v2.4.17
+    pullPolicy: IfNotPresent
+  persistence:
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 30Gi
+    storageClass: ""
+  resources:
+    requests:
+      memory: "2Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+
+# ====================
+# SafeGuard-AI Cloud API
+# ====================
+api:
+  replicaCount: 2
+  serviceType: ClusterIP        # NodePort / LoadBalancer 视环境而定
+  nodePort: 30080               # 仅 serviceType=NodePort 时生效
+  image:
+    repository: safeguard-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilization: 70
+    targetMemoryUtilization: 80
+
+# ====================
+# SafeGuard-AI Edge (Phase 2)
+# ====================
+edge:
+  enabled: true                 # 是否部署边缘节点
+  replicaCount: 3               # 每个厂区的边缘节点数
+  image:
+    repository: safeguard-edge
+    tag: latest
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "150m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilization: 60
+
+# ====================
+# Ingress
+# ====================
+ingress:
+  enabled: true
+  host: safeguard-ai.example.com
+  api: true                    # 暴露云端 API
+  edge: false                  # 边缘节点通常不对外暴露
+  maxBodySize: "50m"
+  proxyTimeout: "120"
+  certManager: false           # 设为 true 以启用 cert-manager 自动 TLS
+  certManagerIssuer: "letsencrypt-prod"
+  tls:
+    enabled: false
+    secretName: ""
+  annotations: {}

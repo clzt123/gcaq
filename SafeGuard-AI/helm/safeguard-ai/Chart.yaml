@@ -1,0 +1,21 @@
+apiVersion: v2
+name: safeguard-ai
+description: SafeGuard-AI (安卫智脑) — 工业安全生产智能体 Helm Chart
+type: application
+version: 0.2.0
+appVersion: "0.2.0"
+keywords:
+  - safety
+  - industrial
+  - ai
+  - langgraph
+  - graphrag
+  - edge-computing
+home: https://github.com/safeguard-ai
+sources:
+  - https://github.com/safeguard-ai
+maintainers:
+  - name: SafeGuard-AI Team
+    email: team@safeguard-ai.dev
+
+dependencies: []

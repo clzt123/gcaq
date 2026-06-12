@@ -1,0 +1,252 @@
+{
+  "_description": "Mock 设备档案数据 — 用于设备全生命周期 (功能10) 开发和测试",
+  "_version": "1.0.0",
+  "_total_equipment": 6,
+  "equipment": [
+    {
+      "equipment_id": "EQ_HP_001",
+      "name": "1号高压液压泵",
+      "equipment_type": "液压泵",
+      "department": "生产部-焊接车间",
+      "location": "A区-液压站",
+      "manufacturer": "博世力士乐",
+      "model": "A10VSO 140",
+      "install_date": "2018-03-15",
+      "design_life_years": 12,
+      "last_maintenance_date": "2026-03-01",
+      "maintenance_interval_days": 90,
+      "next_maintenance_date": "2026-06-15",
+      "overhaul_interval_hours": 8000,
+      "running_hours": 7200,
+      "last_overhaul_hours": 0,
+      "environment_risk": 0.6,
+      "status": "warning",
+      "maintenance_history": [
+        {
+          "record_id": "MAINT_HP001_01",
+          "record_type": "routine_maintenance",
+          "performed_at": "2026-03-01T09:00:00",
+          "description": "定期保养：更换液压油和滤芯",
+          "cost": 2500.0,
+          "downtime_hours": 4.0,
+          "technician": "周明辉",
+          "parts_replaced": ["液压油滤芯", "密封圈套件"]
+        }
+      ],
+      "failure_history": [
+        {
+          "failure_id": "FAIL_HP001_01",
+          "failure_type": "leak",
+          "occurred_at": "2026-05-15T14:30:00",
+          "severity": "major",
+          "description": "液压管路接头处油渍泄漏",
+          "downtime_hours": 8.0,
+          "root_cause": "密封圈老化失效",
+          "resolved": true
+        },
+        {
+          "failure_id": "FAIL_HP001_02",
+          "failure_type": "overheat",
+          "occurred_at": "2026-06-01T10:00:00",
+          "severity": "minor",
+          "description": "油温异常升高至75°C",
+          "downtime_hours": 2.0,
+          "root_cause": "冷却系统滤网堵塞",
+          "resolved": true
+        }
+      ]
+    },
+    {
+      "equipment_id": "EQ_CP_002",
+      "name": "3号空气压缩机",
+      "equipment_type": "空气压缩机",
+      "department": "设备维修部",
+      "location": "B区-空压站",
+      "manufacturer": "阿特拉斯·科普柯",
+      "model": "GA 75+",
+      "install_date": "2020-06-01",
+      "design_life_years": 15,
+      "last_maintenance_date": "2026-05-15",
+      "maintenance_interval_days": 180,
+      "next_maintenance_date": "2026-11-15",
+      "overhaul_interval_hours": 16000,
+      "running_hours": 9800,
+      "last_overhaul_hours": 0,
+      "environment_risk": 0.3,
+      "status": "normal",
+      "maintenance_history": [
+        {
+          "record_id": "MAINT_CP002_01",
+          "record_type": "routine_maintenance",
+          "performed_at": "2026-05-15T08:00:00",
+          "description": "定期保养：更换空滤和油气分离器",
+          "cost": 3800.0,
+          "downtime_hours": 6.0,
+          "technician": "赵永强",
+          "parts_replaced": ["空气滤芯", "油气分离器", "冷却液"]
+        }
+      ],
+      "failure_history": []
+    },
+    {
+      "equipment_id": "EQ_PV_003",
+      "name": "2号压力容器储罐",
+      "equipment_type": "压力容器",
+      "department": "生产部-化工车间",
+      "location": "C区-化学品储罐区",
+      "manufacturer": "上海锅炉厂",
+      "model": "SGL-50",
+      "install_date": "2012-01-10",
+      "design_life_years": 15,
+      "last_maintenance_date": "2025-12-20",
+      "maintenance_interval_days": 365,
+      "next_maintenance_date": "2026-06-08",
+      "overhaul_interval_hours": 0,
+      "running_hours": 0,
+      "last_overhaul_hours": 0,
+      "environment_risk": 0.9,
+      "status": "maintenance_due",
+      "maintenance_history": [
+        {
+          "record_id": "MAINT_PV003_01",
+          "record_type": "inspection",
+          "performed_at": "2025-12-20T10:00:00",
+          "description": "年度压力容器定期检验",
+          "cost": 12000.0,
+          "downtime_hours": 48.0,
+          "technician": "外部检测机构",
+          "parts_replaced": ["安全阀", "压力表"]
+        }
+      ],
+      "failure_history": [
+        {
+          "failure_id": "FAIL_PV003_01",
+          "failure_type": "leak",
+          "occurred_at": "2026-04-20T08:15:00",
+          "severity": "critical",
+          "description": "储罐底部法兰垫片破损导致化学品微量泄漏",
+          "downtime_hours": 24.0,
+          "root_cause": "法兰垫片腐蚀老化",
+          "resolved": true
+        }
+      ]
+    },
+    {
+      "equipment_id": "EQ_EL_004",
+      "name": "主配电柜A",
+      "equipment_type": "配电设备",
+      "department": "设备维修部",
+      "location": "A区-配电房",
+      "manufacturer": "施耐德电气",
+      "model": "BlokSeT 5000A",
+      "install_date": "2019-09-01",
+      "design_life_years": 20,
+      "last_maintenance_date": "2026-04-01",
+      "maintenance_interval_days": 180,
+      "next_maintenance_date": "2026-10-01",
+      "overhaul_interval_hours": 0,
+      "running_hours": 0,
+      "last_overhaul_hours": 0,
+      "environment_risk": 0.4,
+      "status": "normal",
+      "maintenance_history": [
+        {
+          "record_id": "MAINT_EL004_01",
+          "record_type": "inspection",
+          "performed_at": "2026-04-01T08:00:00",
+          "description": "季度电气安全检查",
+          "cost": 1500.0,
+          "downtime_hours": 3.0,
+          "technician": "赵永强",
+          "parts_replaced": []
+        }
+      ],
+      "failure_history": [
+        {
+          "failure_id": "FAIL_EL004_01",
+          "failure_type": "electrical",
+          "occurred_at": "2026-02-10T16:20:00",
+          "severity": "major",
+          "description": "母线接头过热导致局部断电",
+          "downtime_hours": 6.0,
+          "root_cause": "接头松动导致接触电阻增大",
+          "resolved": true
+        }
+      ]
+    },
+    {
+      "equipment_id": "EQ_PP_005",
+      "name": "化学品输送管道-甲苯线",
+      "equipment_type": "管道",
+      "department": "生产部-化工车间",
+      "location": "C区-管道走廊",
+      "manufacturer": "宝钢",
+      "model": "DN80-SS316L",
+      "install_date": "2015-05-20",
+      "design_life_years": 15,
+      "last_maintenance_date": "2026-02-01",
+      "maintenance_interval_days": 180,
+      "next_maintenance_date": "2026-05-30",
+      "overhaul_interval_hours": 0,
+      "running_hours": 0,
+      "last_overhaul_hours": 0,
+      "environment_risk": 1.0,
+      "status": "maintenance_due",
+      "maintenance_history": [],
+      "failure_history": [
+        {
+          "failure_id": "FAIL_PP005_01",
+          "failure_type": "leak",
+          "occurred_at": "2026-05-28T11:45:00",
+          "severity": "critical",
+          "description": "管道焊缝处检测到甲苯微泄漏",
+          "downtime_hours": 36.0,
+          "root_cause": "焊缝应力腐蚀开裂",
+          "resolved": true
+        },
+        {
+          "failure_id": "FAIL_PP005_02",
+          "failure_type": "leak",
+          "occurred_at": "2026-03-12T09:30:00",
+          "severity": "major",
+          "description": "法兰接口处密封失效",
+          "downtime_hours": 12.0,
+          "root_cause": "垫片老化",
+          "resolved": true
+        }
+      ]
+    },
+    {
+      "equipment_id": "EQ_BV_006",
+      "name": "消防水泵2号",
+      "equipment_type": "消防泵",
+      "department": "安全环保部",
+      "location": "消防泵房",
+      "manufacturer": "上海凯泉",
+      "model": "XBD 12/80",
+      "install_date": "2022-01-15",
+      "design_life_years": 25,
+      "last_maintenance_date": "2026-06-01",
+      "maintenance_interval_days": 90,
+      "next_maintenance_date": "2026-09-01",
+      "overhaul_interval_hours": 5000,
+      "running_hours": 1200,
+      "last_overhaul_hours": 0,
+      "environment_risk": 0.2,
+      "status": "normal",
+      "maintenance_history": [
+        {
+          "record_id": "MAINT_BV006_01",
+          "record_type": "routine_maintenance",
+          "performed_at": "2026-06-01T10:00:00",
+          "description": "季度维保：测试启动、检查密封件",
+          "cost": 800.0,
+          "downtime_hours": 2.0,
+          "technician": "李明华",
+          "parts_replaced": ["机械密封"]
+        }
+      ],
+      "failure_history": []
+    }
+  ]
+}
