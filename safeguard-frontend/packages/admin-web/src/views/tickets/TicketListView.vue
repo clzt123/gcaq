@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { TicketCard } from '@safeguard/shared';
+import { TicketCard, apiClient } from '@safeguard/shared';
 import type { TicketItem } from '@safeguard/shared';
-import axios from 'axios';
 
 const tickets = ref<TicketItem[]>([]);
 const loading = ref(false);
@@ -10,8 +9,8 @@ const loading = ref(false);
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await axios.get('/api/v1/tickets');
-    tickets.value = (res.data as any).items ?? (res.data as any) ?? [];
+    const res = await apiClient.get('/api/v1/tickets');
+    tickets.value = (res as any).items ?? (res as any) ?? [];
   } finally {
     loading.value = false;
   }

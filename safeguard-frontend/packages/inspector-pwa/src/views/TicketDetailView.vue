@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { RiskBadge } from '@safeguard/shared';
+import { RiskBadge, apiClient } from '@safeguard/shared';
 import type { TicketItem } from '@safeguard/shared';
-import axios from 'axios';
 
 const route = useRoute();
 const ticket = ref<TicketItem | null>(null);
@@ -12,8 +11,8 @@ const loading = ref(true);
 onMounted(async () => {
   try {
     const id = route.params.id as string;
-    const res = await axios.get(`/api/v1/tickets/${id}`);
-    ticket.value = (res.data as any).data ?? (res.data as any);
+    const res = await apiClient.get(`/api/v1/tickets/${id}`);
+    ticket.value = (res as any).data ?? (res as any);
   } finally { loading.value = false; }
 });
 </script>

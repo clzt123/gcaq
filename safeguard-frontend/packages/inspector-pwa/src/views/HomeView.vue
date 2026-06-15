@@ -9,7 +9,7 @@ const { currentUser } = useAuth();
 const stats = ref<DashboardStats | null>(null);
 
 onMounted(async () => {
-  try { stats.value = await hazardApi.getDashboardStats() as DashboardStats; } catch { /* use defaults */ }
+  try { stats.value = await hazardApi.getDashboardStats(); } catch { /* use defaults */ }
 });
 </script>
 

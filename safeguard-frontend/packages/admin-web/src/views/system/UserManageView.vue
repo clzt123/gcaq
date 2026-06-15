@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import type { User } from '@safeguard/shared';
-import axios from 'axios';
+import { apiClient } from '@safeguard/shared';
 
 const users = ref<User[]>([]);
 const loading = ref(false);
@@ -11,15 +11,15 @@ const form = ref({ name: '', phone: '', role: 'inspector' as string, department:
 async function fetchUsers() {
   loading.value = true;
   try {
-    const res = await axios.get('/api/v1/users');
-    users.value = (res.data as any).items ?? (res.data as any) ?? [];
+    const res = await apiClient.get('/api/v1/users');
+    users.value = (res as any).items ?? (res as any) ?? [];
   } finally {
     loading.value = false;
   }
 }
 
 async function createUser() {
-  await axios.post('/api/v1/users', form.value);
+  await apiClient.post('/api/v1/users', form.value);
   dialogVisible.value = false;
   form.value = { name: '', phone: '', role: 'inspector', department: '', username: '', password: '' };
   await fetchUsers();

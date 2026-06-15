@@ -18,7 +18,7 @@ async function handleCapture(capturedImage: string) {
   analyzing.value = true;
   errorMsg.value = '';
   try {
-    const res = await hazardApi.analyze({ image: capturedImage }) as AnalyzeResponse;
+    const res = await hazardApi.analyze({ image: capturedImage });
     result.value = res;
   } catch {
     errorMsg.value = '分析失败，请重试';

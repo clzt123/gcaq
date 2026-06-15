@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import type { UserRole } from '@safeguard/shared';
 
 declare module 'vue-router' {
@@ -8,7 +9,7 @@ declare module 'vue-router' {
   }
 }
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'Login',

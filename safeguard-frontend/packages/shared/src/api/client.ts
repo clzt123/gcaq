@@ -17,7 +17,7 @@ apiClient.interceptors.request.use((config) => {
 
 // 响应拦截器：统一错误处理
 apiClient.interceptors.response.use(
-  (res) => res.data,
+  (res) => res.data as unknown as never,
   (err) => {
     if (err.response?.status === 401) {
       localStorage.removeItem('token');

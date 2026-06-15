@@ -10,24 +10,33 @@ import type {
   HazardTypeDistribution,
 } from './types';
 
+// Wrapper to let TypeScript know the response interceptor unwraps res.data
+function get<T>(url: string, config?: Parameters<typeof apiClient.get>[1]): Promise<T> {
+  return apiClient.get(url, config) as unknown as Promise<T>;
+}
+
+function post<T>(url: string, data?: unknown): Promise<T> {
+  return apiClient.post(url, data) as unknown as Promise<T>;
+}
+
 export const hazardApi = {
   analyze: (data: AnalyzeRequest) =>
-    apiClient.post<AnalyzeResponse>('/hazard/analyze', data),
+    post<AnalyzeResponse>('/hazard/analyze', data),
 
   getAlerts: (params?: AlertQuery) =>
-    apiClient.get<PaginatedResponse<AlertItem>>('/hazard/alerts', { params }),
+    get<PaginatedResponse<AlertItem>>('/hazard/alerts', { params }),
 
   getAlert: (id: string) =>
-    apiClient.get<AlertItem>(`/hazard/alerts/${id}`),
+    get<AlertItem>(`/hazard/alerts/${id}`),
 
   getDashboardStats: () =>
-    apiClient.get<DashboardStats>('/hazard/dashboard/stats'),
+    get<DashboardStats>('/hazard/dashboard/stats'),
 
   getTrends: (days?: number) =>
-    apiClient.get<TrendItem[]>('/hazard/dashboard/trends', {
+    get<TrendItem[]>('/hazard/dashboard/trends', {
       params: { days: days ?? 7 },
     }),
 
   getHazardDistribution: () =>
-    apiClient.get<HazardTypeDistribution[]>('/hazard/dashboard/distribution'),
+    get<HazardTypeDistribution[]>('/hazard/dashboard/distribution'),
 };
