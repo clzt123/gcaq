@@ -11,7 +11,7 @@ const form = ref({ name: '', phone: '', role: 'inspector' as string, department:
 async function fetchUsers() {
   loading.value = true;
   try {
-    const res = await apiClient.get('/api/v1/users');
+    const res = await apiClient.get('/users');
     users.value = (res as any).items ?? (res as any) ?? [];
   } finally {
     loading.value = false;
@@ -19,7 +19,7 @@ async function fetchUsers() {
 }
 
 async function createUser() {
-  await apiClient.post('/api/v1/users', form.value);
+  await apiClient.post('/users', form.value);
   dialogVisible.value = false;
   form.value = { name: '', phone: '', role: 'inspector', department: '', username: '', password: '' };
   await fetchUsers();

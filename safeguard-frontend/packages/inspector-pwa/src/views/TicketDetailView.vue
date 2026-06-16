@@ -11,7 +11,7 @@ const loading = ref(true);
 onMounted(async () => {
   try {
     const id = route.params.id as string;
-    const res = await apiClient.get(`/api/v1/tickets/${id}`);
+    const res = await apiClient.get(`/tickets/${id}`);
     ticket.value = (res as any).data ?? (res as any);
   } finally { loading.value = false; }
 });

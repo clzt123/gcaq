@@ -175,6 +175,12 @@ export function mockApiPlugin(): Plugin {
         json(res, mockEmployees());
       });
 
+      // Users
+      server.middlewares.use('/api/v1/users', (_req, res) => {
+        if (_req.method === 'POST') return json(res, { id: 'emp-new', name: '新用户', role: 'inspector' }, 201);
+        json(res, mockEmployees());
+      });
+
       // System
       server.middlewares.use('/api/v1/system/health', (_req, res) => json(res, mockHealth()));
       server.middlewares.use('/api/v1/system/edge-nodes', (_req, res) => json(res, mockEdgeNodes()));

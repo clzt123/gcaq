@@ -9,7 +9,7 @@ const loading = ref(false);
 onMounted(async () => {
   loading.value = true;
   try {
-    const res = await apiClient.get('/api/v1/tickets');
+    const res = await apiClient.get('/tickets');
     tickets.value = (res as any).items ?? (res as any) ?? [];
   } finally {
     loading.value = false;
