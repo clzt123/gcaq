@@ -2,10 +2,12 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { VitePWA } from 'vite-plugin-pwa';
 import { resolve } from 'path';
+import { mockApiPlugin } from '../shared/src/mock-auth-plugin';
 
 export default defineConfig({
   plugins: [
     vue(),
+    mockApiPlugin(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'icons/icon-192.png', 'icons/icon-512.png'],

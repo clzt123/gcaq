@@ -10,11 +10,16 @@ const notificationStore = useNotificationStore();
 
 const menuItems = computed(() => {
   const items = [
-    { path: '/dashboard', title: '仪表盘', roles: ['manager', 'admin'] },
-    { path: '/alerts', title: '告警管理', roles: ['manager', 'admin'] },
-    { path: '/tickets', title: '工单管理', roles: ['manager', 'admin'] },
-    { path: '/system/users', title: '用户管理', roles: ['admin'] },
-    { path: '/settings', title: '个人设置', roles: ['inspector', 'manager', 'admin'] },
+    { path: '/dashboard', title: '📊 仪表盘', roles: ['manager', 'admin'] },
+    { path: '/alerts', title: '🚨 告警管理', roles: ['manager', 'admin'] },
+    { path: '/tickets', title: '📋 工单管理', roles: ['manager', 'admin'] },
+    { path: '/knowledge', title: '📚 知识库', roles: ['manager', 'admin'] },
+    { path: '/training', title: '🎓 培训管理', roles: ['manager', 'admin'] },
+    { path: '/employees', title: '👤 员工档案', roles: ['manager', 'admin'] },
+    { path: '/system/users', title: '👥 用户管理', roles: ['admin'] },
+    { path: '/system/monitor', title: '🖥️ 系统监控', roles: ['admin'] },
+    { path: '/system/audit', title: '📜 审计日志', roles: ['admin'] },
+    { path: '/settings', title: '⚙️ 个人设置', roles: ['inspector', 'manager', 'admin'] },
   ];
   return items.filter((item) =>
     item.roles.includes(currentUser.value?.role ?? ''),

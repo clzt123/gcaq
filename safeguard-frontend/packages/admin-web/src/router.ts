@@ -46,10 +46,46 @@ const routes: RouteRecordRaw[] = [
         meta: { title: '工单管理', roles: ['manager', 'admin'] },
       },
       {
+        path: 'knowledge',
+        name: 'Knowledge',
+        component: () => import('./views/knowledge/KnowledgeView.vue'),
+        meta: { title: '知识库管理', roles: ['manager', 'admin'] },
+      },
+      {
+        path: 'training',
+        name: 'Training',
+        component: () => import('./views/training/TrainingView.vue'),
+        meta: { title: '培训管理', roles: ['manager', 'admin'] },
+      },
+      {
+        path: 'employees',
+        name: 'Employees',
+        component: () => import('./views/employees/EmployeeView.vue'),
+        meta: { title: '员工安全档案', roles: ['manager', 'admin'] },
+      },
+      {
+        path: 'employees/:id',
+        name: 'EmployeeDetail',
+        component: () => import('./views/employees/EmployeeDetailView.vue'),
+        meta: { title: '员工详情', roles: ['manager', 'admin'] },
+      },
+      {
         path: 'system/users',
         name: 'UserManage',
         component: () => import('./views/system/UserManageView.vue'),
         meta: { title: '用户管理', roles: ['admin'] },
+      },
+      {
+        path: 'system/monitor',
+        name: 'SystemMonitor',
+        component: () => import('./views/system/SystemMonitorView.vue'),
+        meta: { title: '系统监控', roles: ['admin'] },
+      },
+      {
+        path: 'system/audit',
+        name: 'AuditLog',
+        component: () => import('./views/system/AuditLogView.vue'),
+        meta: { title: '审计日志', roles: ['admin'] },
       },
       {
         path: 'settings',
